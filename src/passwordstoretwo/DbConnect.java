@@ -31,7 +31,17 @@ public class DbConnect
         ResultSet myRs;
         myCon = query.getConnection();
         myRs = query.executeQuery();
+        query.close();
         myCon.close();
         return myRs;
+    }
+    
+    public int runUpdate(PreparedStatement update) throws SQLException
+    {
+        int result;
+        myCon = update.getConnection();
+        result = update.executeUpdate();
+        myCon.close();
+        return result;
     }
 }

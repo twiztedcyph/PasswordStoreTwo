@@ -20,19 +20,28 @@ public class PasswordStoreTwo
     public static void main(String[] args)
     {
         DbConnect db = new DbConnect();
-        ResultSet myRs = null;
         try
         {
-            PreparedStatement query = db.getCon().prepareStatement(
-                    "SELECT * FROM user_details WHERE username  = ?"
+            PreparedStatement update = db.getCon().prepareStatement(
+                    "INSERT INTO user_details(username, password) VALUES(?, ?)"
                     , ResultSet.TYPE_SCROLL_INSENSITIVE
                     , ResultSet.CONCUR_UPDATABLE);
+            update.setString(1, "thenewguy");
+            update.setString(2, "newpass");
+            System.out.println(db.runUpdate(update));
             
-            query.setString(1, "IanWeeks");
-            myRs = db.runQuery(query);
-        } catch (ClassNotFoundException | SQLException ex)
+        } catch (ClassNotFoundException CNFE)
         {
-            System.out.println("Exception: " + ex);
+            System.out.println("Class exception: " + CNFE);
+        } catch (SQLException SQLE)
+        {
+            if(SQLE.getSQLState().equals("23505"))
+            {
+                System.out.println("That username already exists.");
+            }else
+            {
+                System.out.println("SQL exception: " + SQLE);
+            }
         }
     }
 }
