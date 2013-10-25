@@ -83,7 +83,6 @@ public class DbConnect
         ResultSet myRs;
         myCon = query.getConnection();
         myRs = query.executeQuery();
-        query.close();
         myCon.close();
         return myRs;
     }

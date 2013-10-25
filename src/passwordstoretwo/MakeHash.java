@@ -25,9 +25,9 @@ public class MakeHash
         iterations = 1000;
     }
     
-    public final String genHash(String password) throws NoSuchAlgorithmException, InvalidKeySpecException
+    public final String[] genHash(String password) throws NoSuchAlgorithmException, InvalidKeySpecException
     {
-        String result;
+        String[] result = new String[2];
         
         char[] passChars = password.toCharArray();
         byte[] salt = getSalt().getBytes(); //Get salt will go here...
@@ -37,9 +37,28 @@ public class MakeHash
         
         byte[] passHash = skf.generateSecret(pbeSpec).getEncoded();
         
-        result = toHex(passHash);
+        result[0] = toHex(salt);
+        result[1] = toHex(passHash);
         
-        return toHex(salt) + "\n" +result;
+        return result;
+    }
+    
+    public final String[] genHash(String password, String preSalt) throws NoSuchAlgorithmException, InvalidKeySpecException
+    {
+        String result[] = new String[2];
+        
+        char[] passChars = password.toCharArray();
+        byte[] salt = fromHex(preSalt); //Get salt will go here...
+        
+        PBEKeySpec pbeSpec = new PBEKeySpec(passChars, salt, iterations, 64 * 8);
+        SecretKeyFactory skf = SecretKeyFactory.getInstance(specInstance);
+        
+        byte[] passHash = skf.generateSecret(pbeSpec).getEncoded();
+        
+        result[0] = toHex(salt);
+        result[1] = toHex(passHash);
+        
+        return result;
     }
     
     private String toHex(byte[] byteIn)
@@ -53,6 +72,16 @@ public class MakeHash
         }else{
             return hex;
         }
+    }
+    
+    private byte[] fromHex(String hex) throws NoSuchAlgorithmException
+    {
+        byte[] bytes = new byte[hex.length() / 2];
+        for(int i = 0; i<bytes.length ;i++)
+        {
+            bytes[i] = (byte)Integer.parseInt(hex.substring(2 * i, 2 * i + 2), 16);
+        }
+        return bytes;
     }
     
     private String getSalt() throws NoSuchAlgorithmException

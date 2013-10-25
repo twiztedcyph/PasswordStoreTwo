@@ -13,11 +13,6 @@ public class PasswordStoreTwo
      */
     public static void main(String[] args)
     {
-        //DbConnect db = new DbConnect();
-        MakeHash mh = new MakeHash();
-        
-        //hash =128 chars
-        //seed = 22 chars
         
     }
 }
